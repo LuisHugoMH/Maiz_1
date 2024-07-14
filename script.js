@@ -1,29 +1,26 @@
+// script.js
 let model;
 
 async function loadModel() {
     try {
-        //Ruta al modelo
-        model = await tf.loadLayersModel("D:\LuisHugo\LIA\Web\model\model.json");
+        // Actualiza esta URL con la ruta correcta de tu repositorio de GitHub Pages
+        model = await tf.loadLayersModel('https://<tu-usuario>.github.io/<tu-repo>/model/model.json');
         console.log('Modelo cargado correctamente');
     } catch (error) {
         console.error('Error al cargar el modelo:', error);
     }
 }
 
-//Procesar imagen y hacer predicción
 async function predictImage(image) {
-    
-    const img = tf.browser.fromPixels(image)   //Redimensionar y normalizar imagen
+    const img = tf.browser.fromPixels(image)
         .resizeNearestNeighbor([256, 256])
         .toFloat()
         .expandDims(0);
-    
-    //Hacer predicción
+
     const prediction = await model.predict(img).data();
     return prediction;
 }
 
-//Cargar imagen
 document.getElementById('imageInput').addEventListener('change', async (event) => {
     const file = event.target.files[0];
     const imageElement = document.getElementById('selectedImage');
@@ -42,5 +39,4 @@ document.getElementById('imageInput').addEventListener('change', async (event) =
     }
 });
 
-//Cargar el modelo al cargar la página
 window.addEventListener('load', loadModel);
