@@ -31,16 +31,70 @@
             height: auto;
             margin-bottom: 10px;
         }
+        #imageInput {
+            display: none;
+        }
+        .custom-file-upload {
+            border: 1px solid #ccc;
+            display: inline-block;
+            padding: 6px 12px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
     <div id="container">
         <h1>Identificador de maíz</h1>
+        <label for="imageInput" class="custom-file-upload">
+            Examinar...
+        </label>
         <input type="file" id="imageInput">
         <div>
             <img id="selectedImage" width="256" height="256">
             <p id="prediction"></p>
         </div>
+        <button id="clearButton">Limpiar</button>
     </div>
+    <script>
+        async function loadModel() {
+            try {
+                const model = await tf.loadLayersModel('https://<tu-usuario>.github.io/<tu-repo>/model/model.json');
+                return model;
+            } catch (error) {
+                console.error('Error al cargar el modelo:', error);
+            }
+        }
+
+        document.getElementById('imageInput').addEventListener('change', async (event) => {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+
+            reader.onload = async function () {
+                const img = new Image();
+                img.src = reader.result;
+                img.onload = async function () {
+                    const tensor = tf.browser.fromPixels(img).resizeNearestNeighbor([256, 256]).toFloat().expandDims();
+                    const model = await loadModel();
+                    if (model) {
+                        const predictions = model.predict(tensor).dataSync();
+                        const predictedClass = tf.argMax(predictions).dataSync()[0];
+                        const classes = ['Enfermo', 'Sano']; // Ajusta esto según tus clases
+                        document.getElementById('prediction').innerText = `Maíz ${classes[predictedClass]}`;
+                    } else {
+                        document.getElementById('prediction').innerText = 'Error al cargar el modelo';
+                    }
+                };
+                document.getElementById('selectedImage').src = reader.result;
+            };
+
+            reader.readAsDataURL(file);
+        });
+
+        document.getElementById('clearButton').addEventListener('click', () => {
+            document.getElementById('selectedImage').src = '';
+            document.getElementById('prediction').innerText = '';
+            document.getElementById('imageInput').value = '';
+        });
+    </script>
 </body>
 </html>
