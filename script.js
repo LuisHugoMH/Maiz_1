@@ -4,7 +4,7 @@ let model;
 async function loadModel() {
     try {
         // Actualiza esta URL con la ruta correcta de tu repositorio de GitHub Pages
-        model = await tf.loadLayersModel('https://<tu-usuario>.github.io/<tu-repo>/model/model.json');
+        model = await tf.loadLayersModel('https://luishugomh.github.io/Maiz_1/model/model.json');
         console.log('Modelo cargado correctamente');
     } catch (error) {
         console.error('Error al cargar el modelo:', error);
