@@ -44,9 +44,9 @@
 </head>
 <body>
     <div id="container">
-        <h1>Identificador de maíz</h1>
+        <h1>Identificador de Maíz</h1>
         <label for="imageInput" class="custom-file-upload">
-            Examinar...
+            Elegir Imagen
         </label>
         <input type="file" id="imageInput">
         <div>
@@ -78,7 +78,7 @@
                     if (model) {
                         const predictions = model.predict(tensor).dataSync();
                         const predictedClass = tf.argMax(predictions).dataSync()[0];
-                        const classes = ['Enfermo', 'Sano']; // Ajusta esto según tus clases
+                        const classes = ['Enfermo', 'Sano'];
                         document.getElementById('prediction').innerText = `Maíz ${classes[predictedClass]}`;
                     } else {
                         document.getElementById('prediction').innerText = 'Error al cargar el modelo';
